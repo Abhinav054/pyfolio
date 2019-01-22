@@ -1,60 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-    
     <url>
-     <loc>/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
     <url>
-     <loc>/whatsnew/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-    
-
-    
-        
     <url>
-     <loc>/notebooks/single_stock_example/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/notebooks/zipline_algo_example/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/notebooks/bayesian/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/notebooks/sector_mappings_example/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/notebooks/round_trip_tear_sheet_example/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
     <url>
-     <loc>/notebooks/slippage_example/</loc>
-     <lastmod>2018-01-30</lastmod>
+     <loc>None</loc>
+     <lastmod>2019-01-23</lastmod>
      <changefreq>daily</changefreq>
     </url>
-        
-    
-
 </urlset>

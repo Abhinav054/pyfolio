@@ -8,7 +8,7 @@
         <meta name="author" content="Quantopian Inc.">
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Single stock - pyfolio</title>
+        <title>Fama French Benchmark Example - pyfolio</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -53,12 +53,12 @@
                             <li >
                                 <a href="../../whatsnew/">Releases</a>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-<li class="active">
-    <a href="./">Single stock</a>
+<li >
+    <a href="../single_stock_example/">Single stock</a>
 </li>
                                     
 <li >
@@ -90,18 +90,8 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
-                            <li >
-                                <a rel="next" href="../../whatsnew/">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li >
-                                <a rel="prev" href="../zipline_algo_example/">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
                             <li>
-                                <a href="https://github.com/quantopian/pyfolio/edit/master/docs/notebooks/single_stock_example.md"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/quantopian/pyfolio/edit/master/docs/notebooks/fama_french_benchmark.md"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -111,18 +101,33 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#single-stock-analysis-example-in-pyfolio">Single stock analysis example in pyfolio</a></li>
-            <li><a href="#import-pyfolio-and-matplotlib">Import pyfolio and matplotlib</a></li>
-            <li><a href="#fetch-the-daily-returns-for-a-stock">Fetch the daily returns for a stock</a></li>
-            <li><a href="#create-a-returns-tear-sheet-for-the-single-stock">Create a returns tear sheet for the single stock</a></li>
+        <li class="main active"><a href="#fama-french-benchmark-example">Fama French Benchmark Example</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="single-stock-analysis-example-in-pyfolio">Single stock analysis example in pyfolio</h1>
-<p>Here's a simple example where we produce a set of plots, called a tear sheet, for a single stock.</p>
-<h2 id="import-pyfolio-and-matplotlib">Import pyfolio and matplotlib</h2>
+<h1 id="fama-french-benchmark-example">Fama French Benchmark Example</h1>
+<p>In this notebook, we use pyfolio to analyze the returns of a single stock using the canonical Fama-French factors as the benchmark.</p>
+<p>We plot the rolling betas to the Fama-French factors, and run the Bayesian tear sheet for an out-of-sample period of two months.</p>
+<pre><code class="python">import sys
+sys.path.append('/Users/george/Desktop/pyfolio/')
+sys.path
+</code></pre>
+
+<pre><code>['',
+ '/Users/george/anaconda/lib/python36.zip',
+ '/Users/george/anaconda/lib/python3.6',
+ '/Users/george/anaconda/lib/python3.6/lib-dynload',
+ '/Users/george/anaconda/lib/python3.6/site-packages',
+ '/Users/george/anaconda/lib/python3.6/site-packages/Sphinx-1.5.6-py3.6.egg',
+ '/Users/george/anaconda/lib/python3.6/site-packages/aeosa',
+ '/Users/george/anaconda/lib/python3.6/site-packages/setuptools-27.2.0-py3.6.egg',
+ '/Users/george/anaconda/lib/python3.6/site-packages/IPython/extensions',
+ '/Users/george/.ipython',
+ '/Users/george/Desktop/pyfolio/']
+</code></pre>
 <pre><code class="python">import pyfolio as pf
+import matplotlib.pyplot as plt
 %matplotlib inline
 
 # silence warnings
@@ -130,20 +135,31 @@ import warnings
 warnings.filterwarnings('ignore')
 </code></pre>
 
-<h2 id="fetch-the-daily-returns-for-a-stock">Fetch the daily returns for a stock</h2>
-<pre><code class="python">stock_rets = pf.utils.get_symbol_rets('FB')
+<pre><code class="python"># Get the single stock returns
+stock_rets = pf.utils.get_symbol_rets('FB')
 </code></pre>
 
-<h2 id="create-a-returns-tear-sheet-for-the-single-stock">Create a returns tear sheet for the single stock</h2>
-<p>This will show charts and analysis about returns of the single stock.</p>
-<pre><code class="python">pf.create_returns_tear_sheet(stock_rets, live_start_date='2015-12-1')
+<pre><code class="python"># With just the stock returns, we can plot the rolling betas to the Fama-French factors.
+# No need to actually compute the rolling betas; pyfolio does that for us!
+fig, ax = plt.subplots(figsize=[14, 6])
+pf.plotting.plot_rolling_fama_french(stock_rets, ax=ax)
 </code></pre>
 
-<pre><code>Entire data start date: 2012-05-21
-Entire data end date: 2017-08-22
-In-sample months: 42
-Out-of-sample months: 20
+<pre><code>&lt;matplotlib.axes._subplots.AxesSubplot at 0x116d99eb8&gt;
 </code></pre>
+<p><img alt="png" src="../fama_french_benchmark_files/fama_french_benchmark_4_1.png" /></p>
+<pre><code class="python"># However, for the bayesian tear sheet, we will actually need the rolling betas,
+# so use pyfolio to get them
+rolling_beta = pf.timeseries.rolling_fama_french(stock_rets)
+
+# pf.timeseries.rolling_beta defaults to a 6-month trailing window.
+# Thus, the first 6 months' data will be NaNs, which we must drop
+rolling_beta.dropna(inplace=True)
+</code></pre>
+
+<pre><code class="python">rolling_beta.head()
+</code></pre>
+
 <div>
 <style>
     .dataframe thead tr:only-child th {
@@ -162,177 +178,80 @@ Out-of-sample months: 20
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>All</th>
-      <th>In-sample</th>
-      <th>Out-of-sample</th>
+      <th>SMB</th>
+      <th>HML</th>
+      <th>Mom</th>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>Annual return</th>
-      <td>32.8%</td>
-      <td>32.9%</td>
-      <td>32.6%</td>
+      <th>2012-11-20 00:00:00+00:00</th>
+      <td>1.064788</td>
+      <td>1.283250</td>
+      <td>0.242012</td>
     </tr>
     <tr>
-      <th>Cumulative returns</th>
-      <td>343.7%</td>
-      <td>172.7%</td>
-      <td>62.7%</td>
+      <th>2012-11-21 00:00:00+00:00</th>
+      <td>1.528191</td>
+      <td>0.658291</td>
+      <td>0.078740</td>
     </tr>
     <tr>
-      <th>Annual volatility</th>
-      <td>38.0%</td>
-      <td>43.2%</td>
-      <td>24.3%</td>
+      <th>2012-11-23 00:00:00+00:00</th>
+      <td>1.232070</td>
+      <td>0.767785</td>
+      <td>0.166490</td>
     </tr>
     <tr>
-      <th>Sharpe ratio</th>
-      <td>0.93</td>
-      <td>0.87</td>
-      <td>1.28</td>
+      <th>2012-11-26 00:00:00+00:00</th>
+      <td>1.366909</td>
+      <td>0.742015</td>
+      <td>0.214160</td>
     </tr>
     <tr>
-      <th>Calmar ratio</th>
-      <td>0.61</td>
-      <td>0.61</td>
-      <td>2.38</td>
-    </tr>
-    <tr>
-      <th>Stability</th>
-      <td>0.92</td>
-      <td>0.89</td>
-      <td>0.88</td>
-    </tr>
-    <tr>
-      <th>Max drawdown</th>
-      <td>-53.6%</td>
-      <td>-53.6%</td>
-      <td>-13.7%</td>
-    </tr>
-    <tr>
-      <th>Omega ratio</th>
-      <td>1.20</td>
-      <td>1.18</td>
-      <td>1.29</td>
-    </tr>
-    <tr>
-      <th>Sortino ratio</th>
-      <td>1.50</td>
-      <td>1.39</td>
-      <td>2.09</td>
-    </tr>
-    <tr>
-      <th>Skew</th>
-      <td>1.89</td>
-      <td>1.73</td>
-      <td>2.12</td>
-    </tr>
-    <tr>
-      <th>Kurtosis</th>
-      <td>23.62</td>
-      <td>19.44</td>
-      <td>24.74</td>
-    </tr>
-    <tr>
-      <th>Tail ratio</th>
-      <td>1.11</td>
-      <td>1.04</td>
-      <td>1.02</td>
-    </tr>
-    <tr>
-      <th>Daily value at risk</th>
-      <td>-4.7%</td>
-      <td>-5.3%</td>
-      <td>-2.9%</td>
-    </tr>
-    <tr>
-      <th>Alpha</th>
-      <td>0.20</td>
-      <td>0.21</td>
-      <td>0.18</td>
-    </tr>
-    <tr>
-      <th>Beta</th>
-      <td>1.04</td>
-      <td>1.01</td>
-      <td>1.11</td>
+      <th>2012-11-27 00:00:00+00:00</th>
+      <td>1.372172</td>
+      <td>0.700392</td>
+      <td>0.159386</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+<pre><code class="python"># Suppose the last 2 months were our out-of-sample period
+out_of_sample = stock_rets.index[-60]
 
-    .dataframe thead th {
-        text-align: left;
-    }
+# Use pyfolio to run the bayesian tear sheet.
+# The bayesian tear sheet's back end makes heavy use of pymc3, so there will be
+# a lot of graphical output before the actual tear sheet
+pf.tears.create_bayesian_tear_sheet(stock_rets, live_start_date=out_of_sample, benchmark_rets=rolling_beta)
+</code></pre>
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>Worst drawdown periods</th>
-      <th>Net drawdown in %</th>
-      <th>Peak date</th>
-      <th>Valley date</th>
-      <th>Recovery date</th>
-      <th>Duration</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>47.90</td>
-      <td>2012-05-21</td>
-      <td>2012-09-04</td>
-      <td>2013-07-25</td>
-      <td>309</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>22.06</td>
-      <td>2014-03-10</td>
-      <td>2014-04-28</td>
-      <td>2014-07-24</td>
-      <td>99</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>17.34</td>
-      <td>2013-10-18</td>
-      <td>2013-11-25</td>
-      <td>2013-12-17</td>
-      <td>43</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>16.57</td>
-      <td>2015-07-21</td>
-      <td>2015-08-24</td>
-      <td>2015-10-19</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>13.68</td>
-      <td>2016-10-24</td>
-      <td>2016-12-30</td>
-      <td>2017-02-08</td>
-      <td>78</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<pre><code>Running T model
+Optimization terminated successfully.
+         Current function value: -3113.664255
+         Iterations: 3
+         Function evaluations: 117
 
-<p><img alt="png" src="../single_stock_example_files/single_stock_example_6_3.png" /></p>
+
+100%|██████████| 2500/2500 [02:53&lt;00:00, 14.39it/s]
+100%|██████████| 2000/2000 [00:01&lt;00:00, 1328.55it/s]
+
+
+
+Finished T model (required 238.11 seconds).
+
+Running BEST model
+
+
+ 64%|██████▍   | 1598/2500 [02:30&lt;01:51,  8.09it/s]
+</code></pre>
 <pre><code class="python">
 </code></pre></div>
         </div>

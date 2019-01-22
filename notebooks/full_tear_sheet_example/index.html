@@ -8,7 +8,7 @@
         <meta name="author" content="Quantopian Inc.">
         
         <link rel="shortcut icon" href="../../img/favicon.ico">
-        <title>Single stock - pyfolio</title>
+        <title>Full Tear Sheet Example - pyfolio</title>
         <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
         <link href="../../css/font-awesome.min.css" rel="stylesheet">
         <link href="../../css/base.css" rel="stylesheet">
@@ -53,12 +53,12 @@
                             <li >
                                 <a href="../../whatsnew/">Releases</a>
                             </li>
-                            <li class="dropdown active">
+                            <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Tutorial <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     
-<li class="active">
-    <a href="./">Single stock</a>
+<li >
+    <a href="../single_stock_example/">Single stock</a>
 </li>
                                     
 <li >
@@ -90,18 +90,8 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
-                            <li >
-                                <a rel="next" href="../../whatsnew/">
-                                    <i class="fa fa-arrow-left"></i> Previous
-                                </a>
-                            </li>
-                            <li >
-                                <a rel="prev" href="../zipline_algo_example/">
-                                    Next <i class="fa fa-arrow-right"></i>
-                                </a>
-                            </li>
                             <li>
-                                <a href="https://github.com/quantopian/pyfolio/edit/master/docs/notebooks/single_stock_example.md"><i class="fa fa-github"></i> Edit on GitHub</a>
+                                <a href="https://github.com/quantopian/pyfolio/edit/master/docs/notebooks/full_tear_sheet_example.md"><i class="fa fa-github"></i> Edit on GitHub</a>
                             </li>
                     </ul>
                 </div>
@@ -111,230 +101,85 @@
         <div class="container">
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-        <li class="main active"><a href="#single-stock-analysis-example-in-pyfolio">Single stock analysis example in pyfolio</a></li>
-            <li><a href="#import-pyfolio-and-matplotlib">Import pyfolio and matplotlib</a></li>
-            <li><a href="#fetch-the-daily-returns-for-a-stock">Fetch the daily returns for a stock</a></li>
-            <li><a href="#create-a-returns-tear-sheet-for-the-single-stock">Create a returns tear sheet for the single stock</a></li>
+        <li class="main active"><a href="#full-tear-sheet-example">Full Tear Sheet Example</a></li>
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="single-stock-analysis-example-in-pyfolio">Single stock analysis example in pyfolio</h1>
-<p>Here's a simple example where we produce a set of plots, called a tear sheet, for a single stock.</p>
-<h2 id="import-pyfolio-and-matplotlib">Import pyfolio and matplotlib</h2>
-<pre><code class="python">import pyfolio as pf
-%matplotlib inline
-
-# silence warnings
-import warnings
-warnings.filterwarnings('ignore')
+<h1 id="full-tear-sheet-example">Full Tear Sheet Example</h1>
+<p><em><strong>Note:</strong></em> Please run this notebook in <a href="https://www.quantopian.com/notebooks">Quantopian Research</a></p>
+<pre><code class="python">backtest = get_backtest('55f8c9acea2cd40e0029c206')
 </code></pre>
 
-<h2 id="fetch-the-daily-returns-for-a-stock">Fetch the daily returns for a stock</h2>
-<pre><code class="python">stock_rets = pf.utils.get_symbol_rets('FB')
+<pre><code>100% Time: 0:00:10|###########################################################|
+</code></pre>
+<pre><code class="python">backtest.create_full_tear_sheet(live_start_date='2015-5-16')
 </code></pre>
 
-<h2 id="create-a-returns-tear-sheet-for-the-single-stock">Create a returns tear sheet for the single stock</h2>
-<p>This will show charts and analysis about returns of the single stock.</p>
-<pre><code class="python">pf.create_returns_tear_sheet(stock_rets, live_start_date='2015-12-1')
+<pre><code>Entire data start date: 2013-01-02
+Entire data end date: 2015-09-11
+
+
+Out-of-Sample Months: 3
+Backtest Months: 28
+                   Backtest  Out_of_Sample  All_History
+annual_return          0.18           0.07         0.16
+annual_volatility      0.10           0.08         0.10
+sharpe_ratio           1.77           0.83         1.67
+calmar_ratio           2.77           2.26         2.57
+stability              0.94           0.60         0.96
+max_drawdown          -0.06          -0.03        -0.06
+omega_ratio            1.36           1.14         1.33
+sortino_ratio          2.85           1.28         2.68
+skewness               0.34           0.17         0.34
+kurtosis               1.88          -0.56         1.77
+alpha                  0.17           0.03         0.16
+beta                   0.09          -0.06         0.06
+
+Worst Drawdown Periods
+   net drawdown in %  peak date valley date recovery date duration
+0               6.36 2013-05-20  2013-07-10    2013-08-02       55
+2               5.76 2013-03-05  2013-04-15    2013-05-07       46
+1               4.81 2014-08-11  2014-10-31    2015-01-28      123
+4               3.72 2014-02-10  2014-02-20    2014-05-16       70
+3               3.11 2015-08-18  2015-08-31           NaT      NaN
+
+
+2-sigma returns daily    -0.012
+2-sigma returns weekly   -0.023
+dtype: float64
 </code></pre>
-
-<pre><code>Entire data start date: 2012-05-21
-Entire data end date: 2017-08-22
-In-sample months: 42
-Out-of-sample months: 20
+<p><img alt="png" src="../full_tear_sheet_example_files/full_tear_sheet_example_2_1.png" /></p>
+<pre><code>Stress Events
+           mean    min    max
+Apr14     0.001 -0.011  0.011
+Oct14    -0.000 -0.018  0.010
+Fall2015 -0.000 -0.011  0.012
 </code></pre>
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+<p><img alt="png" src="../full_tear_sheet_example_files/full_tear_sheet_example_2_3.png" /></p>
+<pre><code>Top 10 long positions of all time (and max%)
+[u'APC' u'PXD' u'TSO' u'WMB' u'SLB' u'HAL' u'VLO' u'COP' u'EOG' u'PSX']
+[ 0.151  0.15   0.15   0.15   0.149  0.149  0.149  0.13   0.129  0.128]
 
-    .dataframe thead th {
-        text-align: left;
-    }
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>All</th>
-      <th>In-sample</th>
-      <th>Out-of-sample</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>Annual return</th>
-      <td>32.8%</td>
-      <td>32.9%</td>
-      <td>32.6%</td>
-    </tr>
-    <tr>
-      <th>Cumulative returns</th>
-      <td>343.7%</td>
-      <td>172.7%</td>
-      <td>62.7%</td>
-    </tr>
-    <tr>
-      <th>Annual volatility</th>
-      <td>38.0%</td>
-      <td>43.2%</td>
-      <td>24.3%</td>
-    </tr>
-    <tr>
-      <th>Sharpe ratio</th>
-      <td>0.93</td>
-      <td>0.87</td>
-      <td>1.28</td>
-    </tr>
-    <tr>
-      <th>Calmar ratio</th>
-      <td>0.61</td>
-      <td>0.61</td>
-      <td>2.38</td>
-    </tr>
-    <tr>
-      <th>Stability</th>
-      <td>0.92</td>
-      <td>0.89</td>
-      <td>0.88</td>
-    </tr>
-    <tr>
-      <th>Max drawdown</th>
-      <td>-53.6%</td>
-      <td>-53.6%</td>
-      <td>-13.7%</td>
-    </tr>
-    <tr>
-      <th>Omega ratio</th>
-      <td>1.20</td>
-      <td>1.18</td>
-      <td>1.29</td>
-    </tr>
-    <tr>
-      <th>Sortino ratio</th>
-      <td>1.50</td>
-      <td>1.39</td>
-      <td>2.09</td>
-    </tr>
-    <tr>
-      <th>Skew</th>
-      <td>1.89</td>
-      <td>1.73</td>
-      <td>2.12</td>
-    </tr>
-    <tr>
-      <th>Kurtosis</th>
-      <td>23.62</td>
-      <td>19.44</td>
-      <td>24.74</td>
-    </tr>
-    <tr>
-      <th>Tail ratio</th>
-      <td>1.11</td>
-      <td>1.04</td>
-      <td>1.02</td>
-    </tr>
-    <tr>
-      <th>Daily value at risk</th>
-      <td>-4.7%</td>
-      <td>-5.3%</td>
-      <td>-2.9%</td>
-    </tr>
-    <tr>
-      <th>Alpha</th>
-      <td>0.20</td>
-      <td>0.21</td>
-      <td>0.18</td>
-    </tr>
-    <tr>
-      <th>Beta</th>
-      <td>1.04</td>
-      <td>1.01</td>
-      <td>1.11</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+Top 10 short positions of all time (and max%)
+[u'XLE']
+[-0.376]
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
 
-    .dataframe thead th {
-        text-align: left;
-    }
+Top 10 positions of all time (and max%)
+[u'XLE' u'APC' u'PXD' u'TSO' u'WMB' u'SLB' u'HAL' u'VLO' u'COP' u'EOG']
+[ 0.376  0.151  0.15   0.15   0.15   0.149  0.149  0.149  0.13   0.129]
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th>Worst drawdown periods</th>
-      <th>Net drawdown in %</th>
-      <th>Peak date</th>
-      <th>Valley date</th>
-      <th>Recovery date</th>
-      <th>Duration</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>47.90</td>
-      <td>2012-05-21</td>
-      <td>2012-09-04</td>
-      <td>2013-07-25</td>
-      <td>309</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>22.06</td>
-      <td>2014-03-10</td>
-      <td>2014-04-28</td>
-      <td>2014-07-24</td>
-      <td>99</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>17.34</td>
-      <td>2013-10-18</td>
-      <td>2013-11-25</td>
-      <td>2013-12-17</td>
-      <td>43</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>16.57</td>
-      <td>2015-07-21</td>
-      <td>2015-08-24</td>
-      <td>2015-10-19</td>
-      <td>65</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>13.68</td>
-      <td>2016-10-24</td>
-      <td>2016-12-30</td>
-      <td>2017-02-08</td>
-      <td>78</td>
-    </tr>
-  </tbody>
-</table>
-</div>
 
-<p><img alt="png" src="../single_stock_example_files/single_stock_example_6_3.png" /></p>
-<pre><code class="python">
-</code></pre></div>
+All positions ever held
+[u'XLE' u'APC' u'PXD' u'TSO' u'WMB' u'SLB' u'HAL' u'VLO' u'COP' u'EOG'
+ u'PSX' u'KMI' u'OXY' u'CVX' u'XOM']
+[ 0.376  0.151  0.15   0.15   0.15   0.149  0.149  0.149  0.13   0.129
+  0.128  0.128  0.127  0.126  0.126]
+</code></pre>
+<p><img alt="png" src="../full_tear_sheet_example_files/full_tear_sheet_example_2_5.png" /></p>
+<p><img alt="png" src="../full_tear_sheet_example_files/full_tear_sheet_example_2_6.png" /></p></div>
         </div>
 
         <footer class="col-md-12">
